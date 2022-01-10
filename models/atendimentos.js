@@ -9,7 +9,29 @@ class Atendimento {
 
         const dataCriacao = moment().format('YYYY-MM-DD HH:MM:SS')
         const data = moment(atendimento.data, 'DD/MM/YYYY').format('YYYY-MM-DD HH:MM:SS')
-        const atendimentoDatado ={...atendimento, dataCriacao, data}
+        const dataEhValida = moment(data).isSameOrAfter(dataCriacao)
+
+        const clienteEhValido = atendimento.cliente.length >= 5
+
+        const validacoes = [
+            {nome: 'data',
+            valido: dataEhValida,
+            mensagem: 'Data deve ser maior ou igual a data atual'},
+    
+            {
+                nome: 'cliente',
+                valido: clienteEhValido,
+                mensagem: 'Cliente deve ter pelo menos cinco caracteres'
+            }
+
+        ]
+        const erros = validacoes.filter(campo=> !campo.valido)
+        const existemErros = erros.length
+        if(existemErros){
+            res.status(400).json(erros)
+
+        }else{
+            const atendimentoDatado ={...atendimento, dataCriacao, data}
 
         conexao.query(sql, atendimentoDatado, (erro,resultados) =>{
             if(erro){
@@ -18,6 +40,18 @@ class Atendimento {
             } else{
                 res.status(201).json(resultados)
             }
+            })
+        }
+        
+        }
+        lista(res){
+            const sql = 'SELECT * FROM Atendimentos'
+            conexao.query(sql,(erro, resultados) => {
+                if (erro){
+                    res.status(400). json(erro)
+                }else {
+                    res.status(200).json(resultados)
+                }
             })
         }
     }
