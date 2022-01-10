@@ -6,6 +6,6 @@ app.get('/atendimentos',(req, res) => res.send('Você está na rota de atendimen
 
 
 app.post('/atendimentos', (req, res) =>{console.log(req.body)
-     res.send('Você está na rota de atendimento e está realizando um POST')})
+     res.send('POST atendimento')})
 
 }
